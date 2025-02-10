@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/ContextProvider';
 import { Link, useNavigate } from 'react-router-dom';
-import { Home, Heart } from 'lucide-react';  // Import icons
+import { Home, Heart, LogIn, LogOut } from 'lucide-react'; // Added LogIn and LogOut icons
 
 const Navbar = () => {
   const { user } = useAuth();
@@ -10,8 +10,32 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user'); // Also remove user data
     navigate('/login');
   };
+
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
+  // Early return for a simplified navbar when user is not logged in
+  if (!user) {
+    return (
+      <div className="fixed left-0 top-0 h-screen w-64 bg-gray-100 flex flex-col p-5 shadow-md">
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={handleLogin}
+            className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-gray-500 transition flex items-center gap-2"
+          >
+            <LogIn size={20} /> Login
+          </button>
+        </div>
+        <div className="flex-grow">
+          <p className="text-gray-600">Please login to access all features</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -38,9 +62,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center mb-8 mt-14 md:mt-0">
           <button
             onClick={handleLogout}
-            className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-gray-500 transition"
+            className="bg-purple-500 text-white py-2 px-4 rounded hover:bg-gray-500 transition flex items-center gap-2"
           >
-            Logout
+            <LogOut size={20} /> Logout
           </button>
         </div>
 
@@ -81,7 +105,7 @@ const Navbar = () => {
       {isMenuOpen && (
         <div
           onClick={() => setIsMenuOpen(false)}
-          className="fixed inset-0 backdrop-blur  bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 backdrop-blur bg-opacity-50 z-30 md:hidden"
         />
       )}
     </>
